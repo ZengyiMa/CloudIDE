@@ -18,38 +18,39 @@ import * as chai from 'chai';
 import URI from '@theia/core/lib/common/uri';
 import { Container } from '@theia/core/shared/inversify';
 import { VSXEnvironment } from './vsx-environment';
-import { VSXRegistryAPI } from './vsx-registry-api';
-import { VSXSearchParam } from './vsx-registry-types';
-import { VSXApiVersionProvider } from './vsx-api-version-provider';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables/env-variables-protocol';
+import { OVSXClient } from '@theia/ovsx-client/lib/ovsx-client';
+import { VSXSearchParam } from '@theia/ovsx-client/lib/ovsx-types';
 
 const expect = chai.expect;
 
 describe('VSX Registry API', () => {
 
-    let api: VSXRegistryAPI;
+    const url = 'https://open-vsx.org/';
+    const apiUrl = 'https://open-vsx.org/api';
+    const apiVersion = '1.40.0';
+
+    let api: OVSXClient;
 
     beforeEach(() => {
         const container = new Container();
-        container.bind(VSXRegistryAPI).toSelf().inSingletonScope();
         container.bind(VSXEnvironment).toConstantValue(<VSXEnvironment>{
             async getRegistryApiUri(): Promise<URI> {
-                return new URI('https://open-vsx.org/api');
+                return new URI(apiUrl);
             },
             async getRegistryUri(): Promise<URI> {
-                return new URI('https://open-vsx.org');
+                return new URI(url);
             },
             async getVscodeApiVersion(): Promise<string> {
-                return '1.40.0';
+                return apiVersion;
             }
         });
         container.bind(EnvVariablesServer).toConstantValue({});
-        container.bind(VSXApiVersionProvider).toConstantValue(<VSXApiVersionProvider>{
-            getApiVersion(): string {
-                return '1.40.0';
-            }
-        });
-        api = container.get<VSXRegistryAPI>(VSXRegistryAPI);
+        container.bind(OVSXClient).toConstantValue(new OVSXClient({
+            apiUrl,
+            apiVersion
+        }));
+        api = container.get<OVSXClient>(OVSXClient);
     });
 
     describe('isEngineValid', () => {

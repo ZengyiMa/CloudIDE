@@ -21,7 +21,7 @@
  *
  * Should be aligned with https://github.com/eclipse/openvsx/blob/b5694a712e07d266801394916bac30609e16d77b/server/src/main/java/org/eclipse/openvsx/RegistryAPI.java#L246-L266
  */
-export interface VSXSearchParam {
+ export interface VSXSearchParam {
     /**
      * The query text for searching.
      */
@@ -142,4 +142,30 @@ export interface VSXExtensionRaw {
     readonly galleryTheme?: string;
     readonly qna?: string;
     readonly engines?: { [engine: string]: string };
+}
+
+export interface VSXQueryParam {
+    namespaceName?: string;
+    extensionName?: string;
+    extensionVersion?: string;
+    extensionId?: string;
+    extensionUuid?: string;
+    namespaceUuid?: string;
+    includeAllVersions?: boolean;
+}
+
+export interface VSXQueryResult {
+    extensions?: VSXExtensionRaw[];
+}
+
+export interface VSXResponseError extends Error {
+    statusCode: number
+}
+
+export namespace VSXResponseError {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    export function is(error: any): error is VSXResponseError {
+        return !!error && typeof error === 'object'
+            && 'statusCode' in error && typeof error['statusCode'] === 'number';
+    }
 }

@@ -189,3 +189,62 @@ export function xfetch(url: string, options?: RequestInit): Promise<Response> {
     }
     return fetch(url, proxiedOptions);
 }
+
+// export async function getPackageFiles(dirPath: string, files: string[]): Promise<string[]> {
+//     files = files || [];
+//     let dirFiles = undefined;
+//     try {
+//         dirFiles = await fs.readdir(dirPath);
+//     } catch (e) {
+//         console.warn(`${e}`);
+//         return [];
+//     }
+//     dirFiles.forEach(async file => {
+//         const filePath = path.join(dirPath, '/', file);
+//         const stat = await fs.stat(filePath);
+//         if (stat.isDirectory()) {
+//             files = getPackageFiles(dirPath + '/' + file, files);
+//         } else if (path.basename(filePath) === 'package.json' && !path.dirname(filePath).includes('node_modules')) {
+//             files.push(filePath);
+//         }
+//     });
+//     return files;
+// }
+
+// export async function getExtensionPackIds(extPath: string): Promise<string[]> {
+//     const ids = new Set<string>();
+//     const content = await fs.readFile(extPath, 'utf-8');
+//     const json = JSON.parse(content);
+//     const extensionPack = json.extensionPack as object;
+//     for (const ext in extensionPack) {
+//         if (ext === undefined) {
+//             continue;
+//         }
+//         ids.add(extensionPack[ext]);
+//     }
+
+//     return Array.from(ids);
+// }
+
+// /**
+//  * Get the list of unique extension pack ids.
+//  * @param dirPath the extension directory.
+//  * @returns the list of unique extension ids.
+//  */
+// export function getAllExtensionPackIds(dirPath: string): string[] {
+
+//     // Collect unique extension ids.
+//     const ids = new Set<string>();
+
+//     // Collect all `package.json` from extensions.
+//     const packages = getPackageFiles(dirPath, []);
+
+//     packages.forEach(p => {
+//         const extensionIds = getExtensionPackIds(p);
+//         if (extensionIds.length) {
+//             extensionIds.forEach(id => ids.add(id));
+//         }
+//     });
+
+//     return [...ids];
+// }
